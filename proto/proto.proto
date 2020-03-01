@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package supervisory_controller_service;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+enum SCErrorCode {
+    SC_SUCCESS = 0;
+    SC_FAIL = 1;
+    SC_INSERT_DB_FAIL = 11;
+    SC_QUERY_DB_FAIL = 12;
+    SC_TRANSFORM_DATA_FAIL = 41;
+}
+
+message SCResult {
+    string Msg = 1;
+    SCErrorCode Code = 2;
+}
+
+enum SCDeviceStatus {
+    SC_STATUS_UNKNOWN = 0;
+    SC_STATUS_ENABLE = 1;
+    SC_STATUS_DISABLE = 2;
+    SC_STATUS_RESTART = 3;
+}
+
+enum SCDeviceType {
+    SC_Type_UNKNOWN = 0;
+    SC_Type_LOCK = 1;
+}
+
+message  SCDeviceMeta{
+	int64 UID = 1;
+	SCDeviceStatus Status = 2;
+	SCDeviceType Type = 3;
+	string Meta = 4;
+	google.protobuf.Timestamp CreateTime = 11;
+}
+
+//
+message QueryDeviceRequest {
+    int64 UID = 1;
+}
+
+message QueryDeviceResponse {
+    SCResult Result = 1;
+    SCDeviceMeta Device = 2;
+}
+
+//
+message CensusDeviceRequest {
+    int64 StartTime = 1;
+    int64 EndTime = 2;
+}
+
+message CensusDeviceResponse {
+    SCResult Result = 1;
+    int32 TotalDevice = 2;
+    repeated SCDeviceMeta Devices = 3;
+}
+
+//
+message QueryDeviceMonitorRequest {
+    int64 UID = 1;
+}
+
+message QueryDeviceMonitorResponse {
+    SCResult Result = 1;
+    SCDeviceMeta Device = 2;
+    repeated google.protobuf.Timestamp Login = 3;
+}
+
+service SControllerService {
+
+	rpc QueryDevice (QueryDeviceRequest) returns (QueryDeviceResponse) {
+		option (google.api.http) = {
+		post: "/v1/device/{UID}"
+		body: "*"
+		};
+	}
+
+    rpc CensusDevice (CensusDeviceRequest) returns (CensusDeviceResponse) {
+    	option (google.api.http) = {
+    	get: "/v1/device/{StartTime}/{EndTime}"
+    	};
+    }
+
+	rpc QueryDeviceMonitor (QueryDeviceMonitorRequest) returns (QueryDeviceMonitorResponse) {
+		option (google.api.http) = {
+         delete: "/v1/device-monitor/{UID}"
+         };
+	}
+}

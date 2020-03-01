@@ -1,0 +1,229 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/device-monitor/{UID}": {
+      "delete": {
+        "operationId": "QueryDeviceMonitor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/supervisory_controller_serviceQueryDeviceMonitorResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "UID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "SControllerService"
+        ]
+      }
+    },
+    "/v1/device/{StartTime}/{EndTime}": {
+      "get": {
+        "operationId": "CensusDevice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/supervisory_controller_serviceCensusDeviceResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "StartTime",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "EndTime",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "SControllerService"
+        ]
+      }
+    },
+    "/v1/device/{UID}": {
+      "post": {
+        "operationId": "QueryDevice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/supervisory_controller_serviceQueryDeviceResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "UID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/supervisory_controller_serviceQueryDeviceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SControllerService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "supervisory_controller_serviceCensusDeviceResponse": {
+      "type": "object",
+      "properties": {
+        "Result": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCResult"
+        },
+        "TotalDevice": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/supervisory_controller_serviceSCDeviceMeta"
+          }
+        }
+      }
+    },
+    "supervisory_controller_serviceQueryDeviceMonitorResponse": {
+      "type": "object",
+      "properties": {
+        "Result": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCResult"
+        },
+        "Device": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCDeviceMeta"
+        },
+        "Login": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "supervisory_controller_serviceQueryDeviceRequest": {
+      "type": "object",
+      "properties": {
+        "UID": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "supervisory_controller_serviceQueryDeviceResponse": {
+      "type": "object",
+      "properties": {
+        "Result": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCResult"
+        },
+        "Device": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCDeviceMeta"
+        }
+      }
+    },
+    "supervisory_controller_serviceSCDeviceMeta": {
+      "type": "object",
+      "properties": {
+        "UID": {
+          "type": "string",
+          "format": "int64"
+        },
+        "Status": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCDeviceStatus"
+        },
+        "Type": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCDeviceType"
+        },
+        "Meta": {
+          "type": "string"
+        },
+        "CreateTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "supervisory_controller_serviceSCDeviceStatus": {
+      "type": "string",
+      "enum": [
+        "SC_STATUS_UNKNOWN",
+        "SC_STATUS_ENABLE",
+        "SC_STATUS_DISABLE",
+        "SC_STATUS_RESTART"
+      ],
+      "default": "SC_STATUS_UNKNOWN"
+    },
+    "supervisory_controller_serviceSCDeviceType": {
+      "type": "string",
+      "enum": [
+        "SC_Type_UNKNOWN",
+        "SC_Type_LOCK"
+      ],
+      "default": "SC_Type_UNKNOWN"
+    },
+    "supervisory_controller_serviceSCErrorCode": {
+      "type": "string",
+      "enum": [
+        "SC_SUCCESS",
+        "SC_FAIL",
+        "SC_INSERT_DB_FAIL",
+        "SC_QUERY_DB_FAIL",
+        "SC_TRANSFORM_DATA_FAIL"
+      ],
+      "default": "SC_SUCCESS"
+    },
+    "supervisory_controller_serviceSCResult": {
+      "type": "object",
+      "properties": {
+        "Msg": {
+          "type": "string"
+        },
+        "Code": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCErrorCode"
+        }
+      }
+    }
+  }
+}

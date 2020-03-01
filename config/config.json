@@ -1,0 +1,13 @@
+{
+  "PortMeta": {
+    "Tcp": 9090,
+    "Http": 10010,
+    "GRpc": 10011
+  },
+  "DBMeta": {
+    "UserName": "root",
+    "Password": "123!@#",
+    "Endpoint": "10.5.36.66:30103",
+    "KeySpace": "sc"
+  }
+}

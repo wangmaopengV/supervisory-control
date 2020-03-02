@@ -8,6 +8,7 @@ import (
 	"supervisory-control/config"
 	"supervisory-control/server"
 	"supervisory-control/sql"
+	"github.com/onrik/logrus/filename"
 )
 
 var
@@ -33,7 +34,7 @@ func main() {
 
 	//log init
 	flag.Parse()
-	//log.AddHook(filename.NewHook())
+	log.AddHook(filename.NewHook())
 
 	//config init
 	ParseConfig(*configPath)

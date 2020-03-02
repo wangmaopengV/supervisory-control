@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"github.com/onrik/logrus/filename"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"supervisory-control/config"
@@ -34,7 +33,7 @@ func main() {
 
 	//log init
 	flag.Parse()
-	log.AddHook(filename.NewHook())
+	//log.AddHook(filename.NewHook())
 
 	//config init
 	ParseConfig(*configPath)
@@ -47,7 +46,7 @@ func main() {
 	config.GlobalConfig.DBClient = db
 
 	//tcp server
-	server.TcpRun(config.GlobalConfig.PortMeta.Tcp)
+	go server.TcpRun(config.GlobalConfig.PortMeta.Tcp)
 
 	//http server
 	server.RunServer(config.GlobalConfig.PortMeta.GRpc, config.GlobalConfig.PortMeta.Http)

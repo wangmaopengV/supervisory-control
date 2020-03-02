@@ -26,5 +26,8 @@ func NewDBClient(endpoint string, keySpace string, userName string, password str
 	client := &DBClient{
 		dbClient: db,
 	}
+
+	client.CreateDeviceMonitorTable()
+	client.CreateDeviceTable()
 	return client, nil
 }

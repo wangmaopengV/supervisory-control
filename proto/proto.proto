@@ -75,8 +75,7 @@ service SControllerService {
 
 	rpc QueryDevice (QueryDeviceRequest) returns (QueryDeviceResponse) {
 		option (google.api.http) = {
-		post: "/v1/device/{UID}"
-		body: "*"
+		get: "/v1/device/{UID}"
 		};
 	}
 
@@ -88,7 +87,7 @@ service SControllerService {
 
 	rpc QueryDeviceMonitor (QueryDeviceMonitorRequest) returns (QueryDeviceMonitorResponse) {
 		option (google.api.http) = {
-         delete: "/v1/device-monitor/{UID}"
-         };
+        get: "/v1/device-monitor/{UID}"
+        };
 	}
 }

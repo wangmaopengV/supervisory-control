@@ -13,6 +13,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/golang/protobuf/descriptor"
 	"github.com/golang/protobuf/proto"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/grpc-ecosystem/grpc-gateway/utilities"
@@ -22,23 +23,17 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Suppress "imported and not used" errors
 var _ codes.Code
 var _ io.Reader
 var _ status.Status
 var _ = runtime.String
 var _ = utilities.NewDoubleArray
+var _ = descriptor.ForMessage
 
 func request_SControllerService_QueryDevice_0(ctx context.Context, marshaler runtime.Marshaler, client SControllerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryDeviceRequest
 	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
 
 	var (
 		val string
@@ -59,6 +54,33 @@ func request_SControllerService_QueryDevice_0(ctx context.Context, marshaler run
 	}
 
 	msg, err := client.QueryDevice(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_SControllerService_QueryDevice_0(ctx context.Context, marshaler runtime.Marshaler, server SControllerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq QueryDeviceRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["UID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "UID")
+	}
+
+	protoReq.UID, err = runtime.Int64(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "UID", err)
+	}
+
+	msg, err := server.QueryDevice(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -101,6 +123,44 @@ func request_SControllerService_CensusDevice_0(ctx context.Context, marshaler ru
 
 }
 
+func local_request_SControllerService_CensusDevice_0(ctx context.Context, marshaler runtime.Marshaler, server SControllerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CensusDeviceRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["StartTime"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "StartTime")
+	}
+
+	protoReq.StartTime, err = runtime.Int64(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "StartTime", err)
+	}
+
+	val, ok = pathParams["EndTime"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "EndTime")
+	}
+
+	protoReq.EndTime, err = runtime.Int64(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "EndTime", err)
+	}
+
+	msg, err := server.CensusDevice(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_SControllerService_QueryDeviceMonitor_0(ctx context.Context, marshaler runtime.Marshaler, client SControllerServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq QueryDeviceMonitorRequest
 	var metadata runtime.ServerMetadata
@@ -126,6 +186,101 @@ func request_SControllerService_QueryDeviceMonitor_0(ctx context.Context, marsha
 	msg, err := client.QueryDeviceMonitor(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
+}
+
+func local_request_SControllerService_QueryDeviceMonitor_0(ctx context.Context, marshaler runtime.Marshaler, server SControllerServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq QueryDeviceMonitorRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["UID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "UID")
+	}
+
+	protoReq.UID, err = runtime.Int64(val)
+
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "UID", err)
+	}
+
+	msg, err := server.QueryDeviceMonitor(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+// RegisterSControllerServiceHandlerServer registers the http handlers for service SControllerService to "mux".
+// UnaryRPC     :call SControllerServiceServer directly.
+// StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
+func RegisterSControllerServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server SControllerServiceServer) error {
+
+	mux.Handle("GET", pattern_SControllerService_QueryDevice_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_SControllerService_QueryDevice_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_SControllerService_QueryDevice_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_SControllerService_CensusDevice_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_SControllerService_CensusDevice_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_SControllerService_CensusDevice_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("GET", pattern_SControllerService_QueryDeviceMonitor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_SControllerService_QueryDeviceMonitor_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_SControllerService_QueryDeviceMonitor_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	return nil
 }
 
 // RegisterSControllerServiceHandlerFromEndpoint is same as RegisterSControllerServiceHandler but
@@ -166,7 +321,7 @@ func RegisterSControllerServiceHandler(ctx context.Context, mux *runtime.ServeMu
 // "SControllerServiceClient" to call the correct interceptors.
 func RegisterSControllerServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client SControllerServiceClient) error {
 
-	mux.Handle("POST", pattern_SControllerService_QueryDevice_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_SControllerService_QueryDevice_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -206,7 +361,7 @@ func RegisterSControllerServiceHandlerClient(ctx context.Context, mux *runtime.S
 
 	})
 
-	mux.Handle("DELETE", pattern_SControllerService_QueryDeviceMonitor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_SControllerService_QueryDeviceMonitor_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -230,11 +385,11 @@ func RegisterSControllerServiceHandlerClient(ctx context.Context, mux *runtime.S
 }
 
 var (
-	pattern_SControllerService_QueryDevice_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "device", "UID"}, ""))
+	pattern_SControllerService_QueryDevice_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "device", "UID"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_SControllerService_CensusDevice_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "device", "StartTime", "EndTime"}, ""))
+	pattern_SControllerService_CensusDevice_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 1, 0, 4, 1, 5, 3}, []string{"v1", "device", "StartTime", "EndTime"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_SControllerService_QueryDeviceMonitor_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "device-monitor", "UID"}, ""))
+	pattern_SControllerService_QueryDeviceMonitor_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"v1", "device-monitor", "UID"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

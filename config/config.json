@@ -7,7 +7,7 @@
   "DBMeta": {
     "UserName": "root",
     "Password": "123!@#",
-    "Endpoint": "10.5.36.66:30103",
-    "KeySpace": "sc"
+    "Endpoint": "10.5.36.67:30103",
+    "KeySpace": "its"
   }
 }

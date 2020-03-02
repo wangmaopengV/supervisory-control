@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func TcpRun(tcpPort int) {
+func TcpRun(tcpPort int32) {
 
 	var tcpAddr *net.TCPAddr
 	tcpAddr, _ = net.ResolveTCPAddr("tcp", fmt.Sprintf(":%d", tcpPort))

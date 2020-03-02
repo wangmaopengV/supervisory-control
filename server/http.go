@@ -128,7 +128,7 @@ func newSupervisoryControlService() *SupervisoryControlService {
 	return new(SupervisoryControlService)
 }
 
-func RunServer(gRpcPort int, httpPort int) {
+func RunServer(gRpcPort int32, httpPort int32) {
 
 	gRpcServer := grpc.NewServer()
 	pbSC.RegisterSControllerServiceServer(gRpcServer, newSupervisoryControlService())

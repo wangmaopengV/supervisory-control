@@ -7,6 +7,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"supervisory-control/config"
+	"supervisory-control/server"
+	"supervisory-control/sql"
 )
 
 var
@@ -36,4 +38,17 @@ func main() {
 
 	//config init
 	ParseConfig(*configPath)
+
+	//link db
+	db, err := sql.NewDBClient(config.GlobalConfig.DBMeta.Endpoint, config.GlobalConfig.DBMeta.KeySpace, config.GlobalConfig.DBMeta.UserName, config.GlobalConfig.DBMeta.Password)
+	if err != nil {
+		log.Fatal("NewDBClient Failed ", err, config.GlobalConfig.DBMeta)
+	}
+	config.GlobalConfig.DBClient = db
+
+	//tcp server
+	server.TcpRun(config.GlobalConfig.PortMeta.Tcp)
+
+	//http server
+	server.RunServer(config.GlobalConfig.PortMeta.GRpc, config.GlobalConfig.PortMeta.Http)
 }

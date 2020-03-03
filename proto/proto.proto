@@ -38,7 +38,7 @@ message  SCDeviceMeta{
 	google.protobuf.Timestamp CreateTime = 11;
 }
 
-//
+//query
 message QueryDeviceRequest {
     int64 UID = 1;
 }
@@ -48,7 +48,17 @@ message QueryDeviceResponse {
     SCDeviceMeta Device = 2;
 }
 
-//
+//control
+message ControlDeviceRequest {
+    int64 UID = 1;
+    SCDeviceStatus Status = 2;
+}
+
+message ControlDeviceResponse {
+    SCResult Result = 1;
+}
+
+//census
 message CensusDeviceRequest {
     int64 StartTime = 1;
     int64 EndTime = 2;
@@ -60,7 +70,7 @@ message CensusDeviceResponse {
     repeated SCDeviceMeta Devices = 3;
 }
 
-//
+//monitor
 message QueryDeviceMonitorRequest {
     int64 UID = 1;
 }
@@ -78,6 +88,13 @@ service SControllerService {
 		get: "/v1/device/{UID}"
 		};
 	}
+
+    rpc ControlDevice (ControlDeviceRequest) returns (ControlDeviceResponse) {
+        option (google.api.http) = {
+        post: "/v1/device/{UID}"
+        body: "*"
+        };
+    }
 
     rpc CensusDevice (CensusDeviceRequest) returns (CensusDeviceResponse) {
     	option (google.api.http) = {

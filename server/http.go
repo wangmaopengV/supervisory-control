@@ -46,6 +46,36 @@ func (sc *SupervisoryControlService) QueryDevice(ctx context.Context, request *p
 	return res, nil
 }
 
+func (sc *SupervisoryControlService) ControlDevice(ctx context.Context, request *pbSC.ControlDeviceRequest) (*pbSC.ControlDeviceResponse, error) {
+
+	device := &sql.DeviceItem{UID: request.UID}
+	if err := config.GlobalConfig.DBClient.FindDeviceTable(device); err != nil {
+		return &pbSC.ControlDeviceResponse{
+			Result: &pbSC.SCResult{
+				Msg:  err.Error(),
+				Code: pbSC.SCErrorCode_SC_QUERY_DB_FAIL,
+			},
+		}, nil
+	}
+
+	device.Status = int(request.Status)
+	if err := config.GlobalConfig.DBClient.UpdateDeviceTable(device); err != nil {
+		return &pbSC.ControlDeviceResponse{
+			Result: &pbSC.SCResult{
+				Msg:  err.Error(),
+				Code: pbSC.SCErrorCode_SC_INSERT_DB_FAIL,
+			},
+		}, nil
+	}
+
+	return &pbSC.ControlDeviceResponse{
+		Result: &pbSC.SCResult{
+			Msg:  "SUCCESS",
+			Code: pbSC.SCErrorCode_SC_SUCCESS,
+		},
+	}, nil
+}
+
 func (sc *SupervisoryControlService) CensusDevice(ctx context.Context, request *pbSC.CensusDeviceRequest) (*pbSC.CensusDeviceResponse, error) {
 
 	devices, err := config.GlobalConfig.DBClient.CensusDeviceTable(int64(request.StartTime), int64(request.EndTime))

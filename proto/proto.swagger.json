@@ -4,6 +4,10 @@
     "title": "proto.proto",
     "version": "version not set"
   },
+  "schemes": [
+    "http",
+    "https"
+  ],
   "consumes": [
     "application/json"
   ],
@@ -19,12 +23,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/supervisory_controller_serviceQueryDeviceMonitorResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -50,12 +48,6 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/supervisory_controller_serviceCensusDeviceResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
             }
           }
         },
@@ -89,12 +81,6 @@
             "schema": {
               "$ref": "#/definitions/supervisory_controller_serviceQueryDeviceResponse"
             }
-          },
-          "default": {
-            "description": "An unexpected error response",
-            "schema": {
-              "$ref": "#/definitions/runtimeError"
-            }
           }
         },
         "parameters": [
@@ -109,43 +95,41 @@
         "tags": [
           "SControllerService"
         ]
+      },
+      "post": {
+        "operationId": "ControlDevice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/supervisory_controller_serviceControlDeviceResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "UID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/supervisory_controller_serviceControlDeviceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "SControllerService"
+        ]
       }
     }
   },
   "definitions": {
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "type_url": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
-        }
-      }
-    },
-    "runtimeError": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        },
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/protobufAny"
-          }
-        }
-      }
-    },
     "supervisory_controller_serviceCensusDeviceResponse": {
       "type": "object",
       "properties": {
@@ -161,6 +145,27 @@
           "items": {
             "$ref": "#/definitions/supervisory_controller_serviceSCDeviceMeta"
           }
+        }
+      }
+    },
+    "supervisory_controller_serviceControlDeviceRequest": {
+      "type": "object",
+      "properties": {
+        "UID": {
+          "type": "string",
+          "format": "int64"
+        },
+        "Status": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCDeviceStatus"
+        }
+      },
+      "title": "control"
+    },
+    "supervisory_controller_serviceControlDeviceResponse": {
+      "type": "object",
+      "properties": {
+        "Result": {
+          "$ref": "#/definitions/supervisory_controller_serviceSCResult"
         }
       }
     },

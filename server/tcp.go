@@ -38,26 +38,29 @@ func tcpPipe(conn *net.TCPConn) {
 		}
 	}()
 
+	log.Debug(conn.RemoteAddr().String())
+
 	local := 0
 	buffer := make([]byte, 1024)
 	for {
-		if err := (*conn).SetReadDeadline(time.Now().Add(1 * time.Second)); err != nil {
-			log.Warn(err)
+		if err := (*conn).SetReadDeadline(time.Now().Add(3 * time.Minute)); err != nil {
+			log.Error(err)
+			break
 		}
 
 		count, err := (*conn).Read(buffer[local:])
 		if err != nil {
-			if err.Error() == "EOF" {
-				break
-			}
+			log.Debug(err)
+			break
 		}
 
 		if local += count; local >= 12 {
 
-			if _, err := (*conn).Write(agreement.AnalysisAgreement(buffer)); err != nil {
-				log.Error()
+			if _, err := (*conn).Write(agreement.AnalysisAgreement(buffer[0:12])); err != nil {
+				log.Error(err)
 			}
 			buffer = make([]byte, 1024)
+			local = 0
 		}
 	}
 }

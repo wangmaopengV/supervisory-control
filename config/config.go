@@ -17,6 +17,7 @@ type SCDBMeta struct {
 
 type SupervisoryControlConfig struct {
 	PortMeta SCPortMeta
+	LogLevel string
 
 	DBMeta   SCDBMeta
 	DBClient *sql.DBClient

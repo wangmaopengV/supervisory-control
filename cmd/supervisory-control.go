@@ -39,6 +39,15 @@ func main() {
 	//config init
 	ParseConfig(*configPath)
 
+	//log init
+	if len(config.GlobalConfig.LogLevel) > 0 {
+		if logLevel, err := log.ParseLevel(config.GlobalConfig.LogLevel); err == nil {
+			log.SetLevel(logLevel)
+		} else {
+			log.Warn("Parse log level config string failed: ", err)
+		}
+	}
+
 	//link db
 	db, err := sql.NewDBClient(config.GlobalConfig.DBMeta.Endpoint, config.GlobalConfig.DBMeta.KeySpace, config.GlobalConfig.DBMeta.UserName, config.GlobalConfig.DBMeta.Password)
 	if err != nil {

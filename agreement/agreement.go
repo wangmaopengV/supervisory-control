@@ -1,27 +1,22 @@
 package agreement
 
 import (
-	"bytes"
 	"encoding/binary"
 	"supervisory-control/config"
 	pbSC "supervisory-control/proto"
 	"supervisory-control/sql"
+	log "github.com/sirupsen/logrus"
 )
-
-func BytesToInt(b []byte) int64 {
-
-	bytesBuffer := bytes.NewBuffer(b)
-	var x int64
-	_ = binary.Read(bytesBuffer, binary.LittleEndian, &x)
-
-	return x
-}
 
 func AnalysisAgreement(req []byte) []byte {
 
+	log.Debug(req)
+
 	res := []byte{req[0], req[1], req[2], req[3], req[4], req[5], 0x00, req[10], req[11]}
-	uid := BytesToInt(req[2:6])
-	time := BytesToInt(req[6:10])
+	uid := int64(binary.BigEndian.Uint32(req[2:6]))
+	time := int64(binary.BigEndian.Uint32(req[6:10]))
+
+	log.Debug(uid, time)
 
 	data := &sql.DeviceItem{
 		UID:  uid,
@@ -29,7 +24,7 @@ func AnalysisAgreement(req []byte) []byte {
 	}
 	if err := config.GlobalConfig.DBClient.FindDeviceTable(data); err != nil {
 
-		if err.Error() != "empty" {
+		if err.Error() == "empty" {
 			data.Status = 0x01
 			data.CreateTime = time
 			if err := config.GlobalConfig.DBClient.InsertDeviceTable(data); err != nil {
@@ -55,5 +50,6 @@ func AnalysisAgreement(req []byte) []byte {
 	default:
 	}
 
+	log.Debug(res)
 	return res
 }

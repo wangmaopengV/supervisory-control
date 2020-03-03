@@ -9,5 +9,6 @@
     "Password": "123!@#",
     "Endpoint": "10.5.36.67:30103",
     "KeySpace": "its"
-  }
+  },
+  "LogLevel": "debug"
 }

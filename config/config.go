@@ -8,6 +8,12 @@ type SCPortMeta struct {
 	GRpc int32
 }
 
+type SCAgreementMeta struct {
+	TaskSize   int32
+	TaskThread int32
+	LinkSize   int32
+}
+
 type SCDBMeta struct {
 	UserName string
 	Password string
@@ -16,8 +22,9 @@ type SCDBMeta struct {
 }
 
 type SupervisoryControlConfig struct {
-	PortMeta SCPortMeta
-	LogLevel string
+	AgreementMeta SCAgreementMeta
+	PortMeta      SCPortMeta
+	LogLevel      string
 
 	DBMeta   SCDBMeta
 	DBClient *sql.DBClient

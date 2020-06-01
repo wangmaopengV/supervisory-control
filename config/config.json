@@ -4,6 +4,11 @@
     "Http": 10010,
     "GRpc": 10011
   },
+  "SCAgreementMeta": {
+    "TaskSize": 1024,
+    "TaskThread": 3,
+    "LinkSize": 1024
+  },
   "DBMeta": {
     "UserName": "root",
     "Password": "123!@#",

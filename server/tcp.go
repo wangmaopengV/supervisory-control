@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func TcpRun(tcpPort int32) {
+func TcpRun(tcpPort int32, linkSize int32) {
 
 	var tcpAddr *net.TCPAddr
 	tcpAddr, _ = net.ResolveTCPAddr("tcp", fmt.Sprintf(":%d", tcpPort))
@@ -19,6 +19,7 @@ func TcpRun(tcpPort int32) {
 		}
 	}()
 
+	linkChan := make(chan int, linkSize)
 	log.Info("Server ready to read ...")
 	for {
 		tcpConn, err := tcpListener.AcceptTCP()
@@ -26,13 +27,16 @@ func TcpRun(tcpPort int32) {
 			log.Warn(err)
 			continue
 		}
-		go tcpPipe(tcpConn)
+
+		linkChan <- 1
+		go tcpPipe(tcpConn, linkChan)
 	}
 }
 
-func tcpPipe(conn *net.TCPConn) {
+func tcpPipe(conn *net.TCPConn, linkChan chan int) {
 
 	defer func() {
+		<-linkChan
 		if err := conn.Close(); err != nil {
 			log.Warn(err)
 		}
@@ -43,7 +47,7 @@ func tcpPipe(conn *net.TCPConn) {
 	local := 0
 	buffer := make([]byte, 1024)
 	for {
-		if err := (*conn).SetReadDeadline(time.Now().Add(3 * time.Minute)); err != nil {
+		if err := (*conn).SetReadDeadline(time.Now().Add(8 * time.Second)); err != nil {
 			log.Error(err)
 			break
 		}
@@ -56,7 +60,7 @@ func tcpPipe(conn *net.TCPConn) {
 
 		if local += count; local >= 12 {
 
-			if _, err := (*conn).Write(agreement.AnalysisAgreement(buffer[0:12])); err != nil {
+			if _, err := (*conn).Write(agreement.DealTask(buffer[0:12])); err != nil {
 				log.Error(err)
 			}
 			buffer = make([]byte, 1024)

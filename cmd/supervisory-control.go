@@ -9,6 +9,7 @@ import (
 	"supervisory-control/server"
 	"supervisory-control/sql"
 	"github.com/onrik/logrus/filename"
+	"supervisory-control/agreement"
 )
 
 var
@@ -55,8 +56,11 @@ func main() {
 	}
 	config.GlobalConfig.DBClient = db
 
+	//run task
+	agreement.RunTask(config.GlobalConfig.AgreementMeta)
+
 	//tcp server
-	go server.TcpRun(config.GlobalConfig.PortMeta.Tcp)
+	go server.TcpRun(config.GlobalConfig.PortMeta.Tcp, config.GlobalConfig.AgreementMeta.LinkSize)
 
 	//http server
 	server.RunServer(config.GlobalConfig.PortMeta.GRpc, config.GlobalConfig.PortMeta.Http)

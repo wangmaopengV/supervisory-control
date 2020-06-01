@@ -6,9 +6,51 @@ import (
 	pbSC "supervisory-control/proto"
 	"supervisory-control/sql"
 	log "github.com/sirupsen/logrus"
+	"sync"
 )
 
-func AnalysisAgreement(req []byte) []byte {
+type TaskAgreement struct {
+	req  []byte
+	res  []byte
+	sync sync.WaitGroup
+}
+
+var taskChan chan *TaskAgreement
+
+func RunTask(meta config.SCAgreementMeta) {
+
+	run := func() {
+		for true {
+			select {
+
+			case task := <-taskChan:
+				task.res = analysisAgreement(task.req)
+				task.sync.Done()
+
+			default:
+			}
+		}
+	}
+
+	taskChan = make(chan *TaskAgreement, meta.TaskSize)
+	for i := 0; i < int(meta.TaskThread); i++ {
+		go run()
+	}
+}
+
+func DealTask(req []byte) []byte {
+
+	task := &TaskAgreement{
+		req: req,
+	}
+	task.sync.Add(1)
+	taskChan <- task
+	task.sync.Wait()
+
+	return task.res
+}
+
+func analysisAgreement(req []byte) []byte {
 
 	log.Debug(req)
 

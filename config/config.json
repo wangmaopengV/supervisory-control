@@ -1,10 +1,10 @@
 {
   "PortMeta": {
     "Tcp": 9090,
-    "Http": 10010,
-    "GRpc": 10011
+    "Http": 10002,
+    "GRpc": 10001
   },
-  "SCAgreementMeta": {
+  "AgreementMeta": {
     "TaskSize": 1024,
     "TaskThread": 3,
     "LinkSize": 1024
@@ -13,7 +13,7 @@
     "UserName": "root",
     "Password": "123!@#",
     "Endpoint": "10.5.36.67:30103",
-    "KeySpace": "its"
+    "KeySpace": "supervisory"
   },
-  "LogLevel": "debug"
+  "LogLevel": "Debug"
 }

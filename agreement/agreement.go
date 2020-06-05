@@ -7,6 +7,7 @@ import (
 	"supervisory-control/sql"
 	log "github.com/sirupsen/logrus"
 	"sync"
+	time2 "time"
 )
 
 type TaskAgreement struct {
@@ -53,13 +54,15 @@ func DealTask(req []byte) []byte {
 func analysisAgreement(req []byte) []byte {
 
 	log.Debug(req)
+	if req[0] != 0xEA || req[1] != 0xEA {
+		return []byte{0x00}
+	}
 
 	res := []byte{req[0], req[1], req[2], req[3], req[4], req[5], 0x00, req[10], req[11]}
 	uid := int64(binary.BigEndian.Uint32(req[2:6]))
-	time := int64(binary.BigEndian.Uint32(req[6:10]))
+	time := time2.Now().Unix()
 
 	log.Debug(uid, time)
-
 	data := &sql.DeviceItem{
 		UID:  uid,
 		Type: int(pbSC.SCDeviceType_SC_Type_LOCK),

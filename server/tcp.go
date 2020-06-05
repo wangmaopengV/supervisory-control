@@ -47,7 +47,7 @@ func tcpPipe(conn *net.TCPConn, linkChan chan int) {
 	local := 0
 	buffer := make([]byte, 1024)
 	for {
-		if err := (*conn).SetReadDeadline(time.Now().Add(8 * time.Second)); err != nil {
+		if err := (*conn).SetReadDeadline(time.Now().Add(5 * time.Second)); err != nil {
 			log.Error(err)
 			break
 		}

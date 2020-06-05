@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+
 	//主动连接服务器
 	conn, err := net.Dial("tcp", "127.0.0.1:9090")
 	if err != nil {
